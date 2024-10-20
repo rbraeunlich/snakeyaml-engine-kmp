@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlin
 @file:Repository("https://repo1.maven.org/maven2/")
-@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.0.0")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.0.1")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
 @file:Repository("https://bindings.krzeminski.it/")
@@ -14,8 +14,9 @@
 
 import io.github.typesafegithub.workflows.actions.actions.Checkout
 import io.github.typesafegithub.workflows.actions.actions.DownloadArtifact
-import io.github.typesafegithub.workflows.actions.actions.UploadArtifact
 import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.actions.SetupJava.Distribution.Temurin
+import io.github.typesafegithub.workflows.actions.actions.UploadArtifact
 import io.github.typesafegithub.workflows.actions.benchmarkaction.GithubActionBenchmark
 import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
 import io.github.typesafegithub.workflows.actions.gradle.ActionsWrapperValidation
@@ -79,11 +80,10 @@ workflow(
     ) {
         uses(action = Checkout())
         uses(
-            name = "Set up JDK",
+            name = "Set up Gradle Daemon JDK",
             action = SetupJava(
-                javaVersion = "11",
-                distribution = SetupJava.Distribution.Zulu,
-                cache = SetupJava.BuildPlatform.Gradle,
+                javaVersion = "21",
+                distribution = Temurin,
             ),
         )
         uses(
@@ -98,11 +98,11 @@ workflow(
         )
         run(
             name = "Run benchmarks",
-            command = "./gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${ expr{ "matrix.additional-args" }}",
+            command = "./gradlew -p snake-kmp-benchmarks benchmark --no-parallel ${expr { "matrix.additional-args" }}",
         )
         uses(
             action = UploadArtifact(
-                name = "bench-results-${ expr { "matrix.os" } }",
+                name = "bench-results-${expr { "matrix.os" }}",
                 path = listOf("$BENCHMARK_RESULTS/main/**/*.json"),
             )
         )
