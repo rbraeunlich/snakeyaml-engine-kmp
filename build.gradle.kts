@@ -1,3 +1,5 @@
+import buildsrc.utils.configureGradleDaemonJvm
+
 plugins {
     buildsrc.conventions.lang.`kotlin-multiplatform`
     buildsrc.conventions.publishing
@@ -12,7 +14,7 @@ version = "3.0.3-SNAPSHOT"
 description = "SnakeYAML Engine KMP"
 
 apiValidation {
-  ignoredProjects += listOf("snake-kmp-benchmarks")
+    ignoredProjects += listOf("snake-kmp-benchmarks")
 }
 
 kotlin {
@@ -20,7 +22,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("com.squareup.okio:okio:3.9.1")
-                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
+                implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.6.0")
             }
         }
 
@@ -37,7 +39,7 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-engine:5.11.2")
+                implementation("org.junit.jupiter:junit-jupiter-engine:5.11.3")
                 implementation("io.kotest:kotest-runner-junit5")
                 implementation("com.google.guava:guava:33.3.1-jre")
             }
@@ -92,3 +94,9 @@ dokkatoo {
         }
     }
 }
+
+configureGradleDaemonJvm(
+    project = project,
+    updateDaemonJvm = tasks.updateDaemonJvm,
+    gradleDaemonJvmVersion = provider { JavaVersion.toVersion(21) },
+)

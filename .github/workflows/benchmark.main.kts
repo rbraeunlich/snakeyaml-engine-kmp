@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlin
 @file:Repository("https://repo1.maven.org/maven2/")
-@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.0.0")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.0.1")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
 @file:Repository("https://bindings.krzeminski.it/")
@@ -79,11 +79,10 @@ workflow(
     ) {
         uses(action = Checkout())
         uses(
-            name = "Set up JDK",
+            name = "Set up Gradle Daemon JDK",
             action = SetupJava(
-                javaVersion = "11",
+                javaVersion = "21",
                 distribution = SetupJava.Distribution.Zulu,
-                cache = SetupJava.BuildPlatform.Gradle,
             ),
         )
         uses(
